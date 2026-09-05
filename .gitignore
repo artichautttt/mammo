@@ -1,0 +1,40 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+env/
+
+# --- ML artifacts ---
+*.pt
+*.pth
+*.ckpt
+checkpoints/
+runs/
+wandb/
+
+# --- Datasets (never commit real medical data) ---
+data/raw/MVKL/*
+data/raw/CBIS-DDSM/*
+!data/raw/**/.gitkeep
+data/processed/*.csv
+!data/processed/.gitkeep
+
+# --- Secrets ---
+.env
+*.key
+
+# --- Node / Angular ---
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+
+# --- OS / IDE ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
