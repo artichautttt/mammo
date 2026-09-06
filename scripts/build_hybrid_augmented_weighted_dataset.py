@@ -73,8 +73,15 @@ def build_hybrid_dataset(df: pd.DataFrame) -> pd.DataFrame:
     df["augmentation_params"] = "{}"
     df["source_row"] = df.index
 
+    # On n'augmente que le split d'entraînement : les cas de validation / test
+    # doivent rester des cas réels non dupliqués.
+    if "split" in df.columns and (df["split"].astype(str) != "train").any():
+        trainable = df[df["split"].astype(str) == "train"]
+    else:
+        trainable = df
+
     augmented_rows = []
-    for birads_class, group in df.groupby("birads_class"):
+    for birads_class, group in trainable.groupby("birads_class"):
         target = _target_for_class(birads_class)
         current = len(group)
         if current >= target:

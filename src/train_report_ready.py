@@ -71,10 +71,22 @@ def train(
     model = DualViewCLIP().to(device)
 
     full = DualViewDataset(dataset_csv, preprocess=model.preprocess, image_root=image_root)
-    n_val = int(len(full) * val_fraction)
-    n_train = len(full) - n_val
-    generator = torch.Generator().manual_seed(seed)
-    train_set, val_set = random_split(full, [n_train, n_val], generator=generator)
+
+    # Si le CSV porte une colonne ``split`` avec des lignes ``train`` ET ``val``
+    # (cas des annotations ViKL train/val distinctes), on l'utilise telle quelle ;
+    # sinon on découpe aléatoirement.
+    split_col = full.df["split"].astype(str) if "split" in full.df.columns else None
+    if split_col is not None and {"train", "val"}.issubset(set(split_col)):
+        train_idx = split_col.index[split_col == "train"].tolist()
+        val_idx = split_col.index[split_col == "val"].tolist()
+        train_set = torch.utils.data.Subset(full, train_idx)
+        val_set = torch.utils.data.Subset(full, val_idx)
+        print(f"split explicite : {len(train_idx)} train / {len(val_idx)} val")
+    else:
+        n_val = int(len(full) * val_fraction)
+        n_train = len(full) - n_val
+        generator = torch.Generator().manual_seed(seed)
+        train_set, val_set = random_split(full, [n_train, n_val], generator=generator)
 
     sampler = build_weighted_sampler(dataset_csv, seed=seed)
     # le sampler porte sur le dataset complet ; on le restreint aux indices train

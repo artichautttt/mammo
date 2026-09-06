@@ -57,3 +57,17 @@ def test_sample_weight_present_for_all_rows():
     out = build_hybrid_dataset(_dataset({"4A": 20, "1": 4}))
     assert out["sample_weight"].notna().all()
     assert (out["sample_weight"] > 0).all()
+
+
+def test_only_train_split_is_augmented():
+    df = _dataset({"4A": 429, "3": 5})
+    df["split"] = "train"
+    val = _dataset({"3": 8})
+    val["split"] = "val"
+    out = build_hybrid_dataset(pd.concat([df, val], ignore_index=True))
+    # les lignes val ne sont jamais dupliquées
+    assert not out[out["split"] == "val"]["is_augmented"].any()
+    assert (out[out["split"] == "val"]).shape[0] == 8
+    # le train "3" est bien complété à la cible
+    train3 = out[(out["split"] == "train") & (out["birads_class"] == "3")]
+    assert len(train3) == DEFAULT_TARGET_PER_CLASS
