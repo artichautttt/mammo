@@ -46,9 +46,14 @@ BIRADS_RECOMMENDATION: Dict[str, str] = {
 
 # --- MVKL manifestations -------------------------------------------------------
 
-#: The 35 binary manifestations annotated in the MVKL dataset. Order is
-#: significant: it defines the column order of the manifestation vector.
-MVKL_MANIFESTATIONS: List[str] = [
+#: The 35 binary manifestations described in the project report. Order is
+#: significant: it defines the column order of the manifestation vector. This is
+#: the *default* used when no dataset-specific list is available; the real ViKL
+#: release ships its own one-hot attribute columns, which
+#: ``scripts/adapt_vikl_annotations.py`` writes to ``data/processed/
+#: manifestations.json`` — :func:`load_mvkl_manifestations` picks that up
+#: automatically.
+DEFAULT_MVKL_MANIFESTATIONS: List[str] = [
     "mass",
     "spiculated_margin",
     "circumscribed_margin",
@@ -85,7 +90,37 @@ MVKL_MANIFESTATIONS: List[str] = [
     "nipple_retraction",
     "trabecular_thickening",
 ]
-assert len(MVKL_MANIFESTATIONS) == 35, "expected exactly 35 MVKL manifestations"
+assert len(DEFAULT_MVKL_MANIFESTATIONS) == 35, "expected exactly 35 default manifestations"
+
+#: Path of the optional JSON file (a flat list of names) that overrides the
+#: manifestation vocabulary. Produced by the ViKL annotation adapter.
+MANIFESTATIONS_JSON_ENV = "MAMMO_MANIFESTATIONS_JSON"
+DEFAULT_MANIFESTATIONS_JSON = "data/processed/manifestations.json"
+
+
+def load_mvkl_manifestations() -> List[str]:
+    """Return the manifestation vocabulary.
+
+    Uses the JSON override (env ``MAMMO_MANIFESTATIONS_JSON`` or
+    ``data/processed/manifestations.json``) when present and non-empty, otherwise
+    falls back to :data:`DEFAULT_MVKL_MANIFESTATIONS`.
+    """
+    import json
+    import os
+
+    path = os.environ.get(MANIFESTATIONS_JSON_ENV, DEFAULT_MANIFESTATIONS_JSON)
+    try:
+        with open(path, encoding="utf-8") as handle:
+            names = json.load(handle)
+        if isinstance(names, list) and names:
+            return [str(n) for n in names]
+    except (OSError, ValueError):
+        pass
+    return list(DEFAULT_MVKL_MANIFESTATIONS)
+
+
+#: Active manifestation vocabulary for this run.
+MVKL_MANIFESTATIONS: List[str] = load_mvkl_manifestations()
 
 # --- CBIS-DDSM morphological descriptors -------------------------------------
 

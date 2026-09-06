@@ -108,6 +108,29 @@ python scripts/build_hybrid_augmented_weighted_dataset.py --in data/processed/co
 
 Après l'étape 5 vous devez obtenir **1930 cas** (852 CBIS-DDSM + 1078 MVKL).
 
+### Données MVKL / ViKL réelles
+
+Le jeu MVKL publié (https://github.com/wxwxwwxxx/ViKL) fournit ses annotations
+dans un **fichier Excel** (colonne `view_id` encodant vue + latéralité,
+manifestations one-hot, compte rendu). L'étape 1 (`detect_mvkl_views.py`,
+template matching + OCR) est alors **inutile** : utiliser l'adaptateur
+
+```bash
+python -m scripts.adapt_vikl_annotations \
+    --xlsx data/raw/MVKL/annotation/train_final_onehot.xlsx \
+    --images-root data/raw/MVKL \
+    --out data/processed/mvkl_labeled_views.csv
+```
+
+Il écrit aussi `data/processed/manifestations.json`, repris automatiquement par
+le modèle (`src/labels.load_mvkl_manifestations`). `build_combined_dual_view_dataset.py`
+accepte `--mvkl` **et/ou** `--cbis` : on peut donc entraîner sur MVKL seul.
+
+### Entraînement dans le cloud
+
+Notebook prêt à l'emploi : [`notebooks/train_colab.ipynb`](notebooks/train_colab.ipynb)
+([Open in Colab](https://colab.research.google.com/github/artichautttt/mammo/blob/main/notebooks/train_colab.ipynb)).
+
 ---
 
 ## 5. Entraînement

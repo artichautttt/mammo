@@ -126,21 +126,30 @@ def _align_cbis(cbis_cases: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def combine(mvkl_views: pd.DataFrame, cbis_cases: pd.DataFrame) -> pd.DataFrame:
-    """Fusionne les deux sources dans le schéma canonique."""
-    mvkl_cases = _mvkl_to_cases(mvkl_views)
-    cbis_aligned = _align_cbis(cbis_cases)
+def combine(
+    mvkl_views: Optional[pd.DataFrame] = None,
+    cbis_cases: Optional[pd.DataFrame] = None,
+) -> pd.DataFrame:
+    """Fusionne les sources disponibles dans le schéma canonique.
 
-    for df in (mvkl_cases, cbis_aligned):
+    Chaque source est optionnelle : on peut construire un dataset MVKL seul (cas
+    de la première campagne d'entraînement, quand CBIS-DDSM n'est pas encore
+    converti) ou CBIS-DDSM seul.
+    """
+    frames: list[pd.DataFrame] = []
+    if mvkl_views is not None and not mvkl_views.empty:
+        frames.append(_mvkl_to_cases(mvkl_views))
+    if cbis_cases is not None and not cbis_cases.empty:
+        frames.append(_align_cbis(cbis_cases))
+    if not frames:
+        raise ValueError("Au moins une source (MVKL ou CBIS-DDSM) doit être fournie")
+
+    for df in frames:
         for col in CANONICAL_COLS:
             if col not in df.columns:
                 df[col] = pd.NA
 
-    combined = pd.concat(
-        [mvkl_cases[CANONICAL_COLS], cbis_aligned[CANONICAL_COLS]],
-        ignore_index=True,
-    )
-    return combined
+    return pd.concat([df[CANONICAL_COLS] for df in frames], ignore_index=True)
 
 
 def main() -> None:
@@ -148,13 +157,15 @@ def main() -> None:
 
     bootstrap_console()
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--mvkl", required=True, type=Path, help="mvkl_labeled_views.csv")
-    parser.add_argument("--cbis", required=True, type=Path, help="dual_view_cases.csv")
+    parser.add_argument("--mvkl", type=Path, default=None, help="mvkl_labeled_views.csv")
+    parser.add_argument("--cbis", type=Path, default=None, help="dual_view_cases.csv")
     parser.add_argument("--out", required=True, type=Path)
     args = parser.parse_args()
 
-    mvkl_views = pd.read_csv(args.mvkl)
-    cbis_cases = pd.read_csv(args.cbis)
+    if not args.mvkl and not args.cbis:
+        parser.error("fournir --mvkl et/ou --cbis")
+    mvkl_views = pd.read_csv(args.mvkl) if args.mvkl else None
+    cbis_cases = pd.read_csv(args.cbis) if args.cbis else None
     combined = combine(mvkl_views, cbis_cases)
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
