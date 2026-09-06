@@ -1,0 +1,90 @@
+/* Charte graphique — tons bordeaux / violet, sobre, milieu médical */
+:root {
+  --bordeaux: #6b1f3a;
+  --bordeaux-dark: #4d1329;
+  --violet: #4a2c63;
+  --violet-light: #7a5a94;
+  --bg: #faf7f9;
+  --surface: #ffffff;
+  --text: #2b2530;
+  --muted: #7c7482;
+  --border: #e6dee9;
+  --ok: #2e7d32;
+  --warn: #f9a825;
+  --danger: #c62828;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+a { color: var(--bordeaux); }
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(74, 44, 99, 0.08);
+}
+
+.btn {
+  display: inline-block;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 15px;
+  cursor: pointer;
+  background: var(--bordeaux);
+  color: #fff;
+  transition: background 0.15s ease;
+}
+.btn:hover { background: var(--bordeaux-dark); }
+.btn.secondary { background: var(--violet); }
+.btn.ghost { background: transparent; color: var(--bordeaux); border: 1px solid var(--bordeaux); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  color: #fff;
+  font-weight: 700;
+}
+
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: left; font-size: 14px; }
+th { background: var(--violet); color: #fff; }
+
+.dropzone {
+  border: 2px dashed var(--violet-light);
+  border-radius: 12px;
+  padding: 28px;
+  text-align: center;
+  color: var(--muted);
+  cursor: pointer;
+}
+.dropzone.filled { border-style: solid; border-color: var(--ok); color: var(--text); }
+
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+
+.muted { color: var(--muted); font-size: 13px; }
+.disclaimer {
+  margin-top: 16px;
+  padding: 12px 16px;
+  border-left: 4px solid var(--warn);
+  background: #fff8e1;
+  font-size: 13px;
+}
