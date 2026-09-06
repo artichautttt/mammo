@@ -156,7 +156,9 @@ npm start          # http://localhost:4200
 Parcours linéaire guidé : **Accueil → Import → Résultats → Export → Rapport PDF**.
 Charte graphique bordeaux/violet, orientée milieu médical.
 
-Captures d'écran : voir `docs/`.
+| Accueil | Import |
+|---------|--------|
+| ![Accueil](docs/screenshot-accueil.jpg) | ![Import](docs/screenshot-import.jpg) |
 
 ---
 

@@ -333,6 +333,9 @@ def generate_report(
 
 
 def main() -> None:
+    from .console import enable_utf8_stdout
+
+    enable_utf8_stdout()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--model", required=True)
     parser.add_argument("--left", required=True, help="Image MLO")

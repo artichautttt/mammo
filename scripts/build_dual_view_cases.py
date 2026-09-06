@@ -118,6 +118,9 @@ def build_dual_view_cases(indexed: pd.DataFrame) -> pd.DataFrame:
 
 
 def main() -> None:
+    from _bootstrap import bootstrap_console
+
+    bootstrap_console()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--indexed", required=True, type=Path)
     parser.add_argument("--out", required=True, type=Path)

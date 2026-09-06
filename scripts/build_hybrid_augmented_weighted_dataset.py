@@ -105,6 +105,9 @@ def build_hybrid_dataset(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def main() -> None:
+    from _bootstrap import bootstrap_console
+
+    bootstrap_console()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--in", dest="in_path", required=True, type=Path)
     parser.add_argument("--out", required=True, type=Path)

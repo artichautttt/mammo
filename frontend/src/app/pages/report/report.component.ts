@@ -46,7 +46,7 @@ import {
         <h3>Caractéristiques retenues</h3>
         <ul>
           <li *ngFor="let m of r.active_manifestations">
-            {{ MANIFESTATION_FR[m] ?? m }} ({{ (r.manifestations[m] * 100) | number: '1.0-0' }}%)
+            {{ label(m) }} ({{ (r.manifestations[m] * 100) | number: '1.0-0' }}%)
           </li>
           <li *ngIf="!r.active_manifestations.length">Aucune manifestation retenue au seuil courant.</li>
         </ul>
@@ -83,9 +83,13 @@ import {
 })
 export class ReportComponent {
   today = new Date().toISOString().slice(0, 10);
-  MANIFESTATION_FR = MANIFESTATION_FR;
 
   constructor(public svc: AnalysisService) {}
+
+  /** Libellé FR d'une manifestation (repli sur le nom brut). */
+  label(name: string): string {
+    return MANIFESTATION_FR[name] || name.replace(/_/g, ' ');
+  }
 
   color = (c: string) => BIRADS_COLORS[c] ?? 'var(--bordeaux)';
   reco = (c: string) => BIRADS_RECOMMENDATION_FR[c] ?? 'Corrélation clinique recommandée.';

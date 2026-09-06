@@ -108,6 +108,9 @@ def prepare(cbis_dir: Path, jpeg_root: Path) -> pd.DataFrame:
 
 
 def main() -> None:
+    from _bootstrap import bootstrap_console
+
+    bootstrap_console()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--cbis", required=True, type=Path, help="Dossier contenant les 4 CSV")
     parser.add_argument("--jpeg-root", type=Path, default=None,

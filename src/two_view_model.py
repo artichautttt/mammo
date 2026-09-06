@@ -113,6 +113,9 @@ def predict(
 
 
 def main() -> None:
+    from .console import enable_utf8_stdout
+
+    enable_utf8_stdout()
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
     p = sub.add_parser("predict", help="Prédire à partir d'une paire MLO/CC")

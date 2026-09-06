@@ -144,6 +144,9 @@ def combine(mvkl_views: pd.DataFrame, cbis_cases: pd.DataFrame) -> pd.DataFrame:
 
 
 def main() -> None:
+    from _bootstrap import bootstrap_console
+
+    bootstrap_console()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--mvkl", required=True, type=Path, help="mvkl_labeled_views.csv")
     parser.add_argument("--cbis", required=True, type=Path, help="dual_view_cases.csv")

@@ -279,6 +279,9 @@ def load_annotations(reports_csv: Optional[Path]) -> Dict[str, List[Dict[str, st
 
 
 def main() -> None:
+    from _bootstrap import bootstrap_console
+
+    bootstrap_console()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--raw", required=True, type=Path, help="Dossier des PNG MVKL bruts")
     parser.add_argument("--templates", type=Path, default=Path("data/raw/MVKL/templates"))
