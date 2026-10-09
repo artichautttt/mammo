@@ -6,8 +6,8 @@ d'une recherche par similarité de cas, et d'une synthèse en langage naturel vi
 un LLM (API Groq / LLaMA).
 
 > Projet de semestre — École Mohammadia d'Ingénieurs.
-> Ce dépôt est une reconstruction fidèle de l'architecture décrite dans le
-> rapport technique original (code source initial perdu).
+> L'architecture et les choix de modélisation sont détaillés dans le rapport
+> technique du projet.
 
 ---
 
